@@ -27,33 +27,56 @@ const gestionnaireTache  = {
         let self = this ; // Pour garder la référence à gestionTache dans les fonctions internes
     
     // on parcourt chaque element du tableau pour les afficher sous formes de listes 
-      this.taches.forEach(tache => {
+      this.tableauTaches.forEach(indexTache, tache => {
          
         const li =  document.createElement("li"); 
         li.innerHTML = tache.afficheInfo(); 
     
         const checkbox  = document.createElement("input"); 
         checkbox.type = "checkbox"; 
+        checkbox.addEventListener('change', function(){
+            
+        })
 
         const suppElement = document.createElement("button"); 
-        suppElement.text = "supprimer"; 
+        suppElement.innerHTML= "supprimer"; 
 
         suppElement.addEventListener('click', function(){
-          self.splice()
+          self.tableauTaches.splice(indexTache , 1); 
+          valeurInput.value = ""; 
         })
+
+       
         //assemblage
         li.appendChild(checkbox);
         li.appendChild(suppElement); 
         affichageList.appendChild(li);
        
       });
+    }, 
+
+    save : function(){
+        localStorage.setItem("taches", JSON.parse(this.taches))
     }
 }
 
+boutonAjouter.addEventListener('click', ()=>{
 
-boutonAjouter.addEventListener('click', function(){
     const recupValeur = valeurInput.value.trim(); 
+    // onn verifie si une tache existe comme ca on le cree
     if(recupValeur !== ""){
-      
+        const nouvelleValeur  = creerTache(recupValeur); 
+        gestionnaireTache.addTache(nouvelleValeur); 
+        gestionnaireTache.save(); 
+        gestionnaireTache.afficheTache(); 
+        valeurInput.value = ""; 
     }
+})
+
+
+window.addEventListener('load', function(){
+    let text = JSON.stringify(this.tableauTaches); 
+    localStorage.setItem("taches", text); 
+
+
 })
